@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 15%;
+
+    /* CHANGED: Replaced green (142) with a modern blue (217) */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 15%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    /* CHANGED: Also updated accent to match the new blue */
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+
+    /* CHANGED: Updated ring color to match the new blue */
+    --ring: 217 91% 60%;
+
+    --radius: 1rem;
+
+    /* CHANGED: Updated chat colors
+       --chat-user is still dark grey
+       --chat-bot is now a dark, glassy blue
+    */
+    --chat-user: 0 0% 20%;           /* Dark Grey */
+    --chat-user-foreground: 0 0% 98%; /* Off-white text */
+    --chat-bot: 217 80% 30%;          /* Dark Blue */
+    --chat-bot-foreground: 0 0% 98%;   /* Off-white text */
+
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1);
+  }
+
+  /* Base styles */
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
