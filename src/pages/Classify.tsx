@@ -6,32 +6,55 @@ import { UploadCloud, Loader2 } from "lucide-react";
 
 const Classify = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<{ class: string, confidence: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
-      setResult(null); // Clear previous result
+      setResult(null);
+      setError(null);
     }
   };
 
-  const handleClassify = () => {
+  const handleClassify = async () => {
     if (!file) return;
     setIsLoading(true);
     setResult(null);
+    setError(null);
 
-    // Simulate API call
-    setTimeout(() => {
-      // In a real app, you would send 'file' to your backend API
-      // and get a real classification.
-      setResult("Simulated Result: Powdery Mildew detected on the crop leaf.");
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const apiUrl = import.meta.env.VITE_API_URL + "/classify";
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to classify");
+      }
+
+      setResult({
+        class: data.predicted_class,
+        confidence: data.confidence
+      });
+
+    } catch (err: any) {
+      console.error("Classification error:", err);
+      setError(err.message || "An unknown error occurred.");
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   return (
-    // This container centers the card in the available space
     <div className="flex-1 flex flex-col items-center justify-center p-4">
       <Card className="w-full max-w-lg bg-card/80 backdrop-blur-md">
         <CardHeader>
@@ -51,6 +74,7 @@ const Classify = () => {
           />
 
           {file && (
+            // This </p> tag was </Fp> before, which was a typo
             <p className="text-sm text-muted-foreground mt-2">
               Selected: {file.name}
             </p>
@@ -68,7 +92,15 @@ const Classify = () => {
           {result && (
             <div className="mt-6 p-4 rounded-md bg-secondary">
               <p className="font-semibold text-secondary-foreground">Classification Result:</p>
-              <p className="text-secondary-foreground">{result}</p>
+              <p className="text-lg text-primary font-bold">{result.class}</p>
+              <p className="text-sm text-muted-foreground">Confidence: {result.confidence}</p>
+            </div>
+          )}
+
+          {error && (
+            <div className="mt-6 p-4 rounded-md bg-destructive/20">
+              <p className="font-semibold text-destructive">Error:</p>
+              <p className="text-sm text-destructive">{error}</p>
             </div>
           )}
         </CardContent>
